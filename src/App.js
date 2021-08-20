@@ -1,43 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import SelectCurrency from './Components/SelectCurrency';
 
 
 export default function App(){
-    const [conteudo, setConteudo] = useState('Ola, mundo')
-    let moedaBase = 'BRL'
-    let moedaFinal = 'USD'
-    const seila = async () =>{
-        console.log(moedaBase, moedaFinal)
-        setConteudo ( await fetch(`https://economia.awesomeapi.com.br/json/${moedaBase}-${moedaFinal}`)
+    const [moedaBase, setMoedaBase] = useState('BRL')
+    const [moedaFinal, setMoedaFinal] = useState('USD')
+    const [resultado, setResultado] = useState('...')
+    useEffect( () => {
+        setResultado('...')
+        fetch(`https://economia.awesomeapi.com.br/json/${moedaBase}-${moedaFinal}`)
         .then(respostaApi => respostaApi.json())
-        .then(resposta => `${resposta[0].name}`)
-        .catch(() => 'Ocorreu um erro. Perdão :(')
-        )
-        
-    }
+        .then(resposta => resposta[0].high)
+        .then(currency => setResultado(parseFloat(currency).toLocaleString(moedaFinal)))
+
+    }, [moedaBase, moedaFinal])
+    
     return (
         <>
-            <h1 onClick={seila}>{conteudo}</h1>
-            <SelectCurrency onChange={(e) =>{
-                if (e.target.value === moedaFinal) {
-                    const selectMoedaFinal = e.target.nextElementSibling 
-                    selectMoedaFinal.value = moedaBase
-                    moedaFinal = moedaBase
+            <h1>{resultado}</h1>
+            <SelectCurrency onChange={e => {
+                const selectMF = document.querySelector('.moeda-final')
+                if (e.target.value === selectMF.value) {
+                    selectMF.value = moedaBase
+                    setMoedaFinal(moedaBase)                 
                 }
-                moedaBase = e.target.value
-                console.log(moedaBase, moedaFinal)
-            }}>
+                setMoedaBase(e.target.value)
+            }} className="moeda-base">
                 <option>BRL</option>
                 <option>USD</option>
             </SelectCurrency>
-            <SelectCurrency onChange={(e) =>{
-                if (e.target.value === moedaBase) {
-                    const selectMoedaFinal = e.target.previousElementSibling
-                    selectMoedaFinal.value = moedaFinal
-                    moedaBase = moedaFinal
+            <SelectCurrency className="moeda-final" onChange={e =>{
+                const selectMB = document.querySelector('.moeda-base')
+                if (e.target.value === selectMB.value) {
+                    selectMB.value = moedaFinal
+                    setMoedaBase(moedaFinal)                 
                 }
-                moedaFinal = e.target.value
-                console.log(moedaBase, moedaFinal)
+                setMoedaFinal(e.target.value)
             }}>
                 <option>USD</option>
                 <option>BRL</option>
