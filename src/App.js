@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import SelectCash from './Components/SelectCash';
+import SelectCurrency from './Components/SelectCurrency';
 
 
 export default function App(){
@@ -18,7 +18,7 @@ export default function App(){
     return (
         <>
             <h1 onClick={seila}>{conteudo}</h1>
-            <SelectCash onChange={(e) =>{
+            <SelectCurrency onChange={(e) =>{
                 if (e.target.value === moedaFinal) {
                     const selectMoedaFinal = e.target.nextElementSibling 
                     selectMoedaFinal.value = moedaBase
@@ -29,8 +29,8 @@ export default function App(){
             }}>
                 <option>BRL</option>
                 <option>USD</option>
-            </SelectCash>
-            <SelectCash onChange={(e) =>{
+            </SelectCurrency>
+            <SelectCurrency onChange={(e) =>{
                 if (e.target.value === moedaBase) {
                     const selectMoedaFinal = e.target.previousElementSibling
                     selectMoedaFinal.value = moedaFinal
@@ -41,7 +41,7 @@ export default function App(){
             }}>
                 <option>USD</option>
                 <option>BRL</option>
-            </SelectCash>
+            </SelectCurrency>
         </>
     )
 }
