@@ -6,18 +6,20 @@ function Select(props){
     return (
         <SelectCurrency  className={props.className} 
         onChange={e => props.change(e, props.oposit)}>
-                <option>{props.content[0]}</option>
-                <option>{props.content[1]}</option>
-                <option>{props.content[2]}</option>
+                {props.list.map(item =>{
+                    return props.content(item)
+                })}
         </SelectCurrency>
     )
 }
 
 
 export default function App(){
+    const [resultado, setResultado] = useState('...')
+    const optionMB = ['USD', 'BRL', 'EUR', 'GBP', 'JPY', 'AUD', 'CAD']
+    const optionMF = ['BRL', 'USD', 'EUR', 'GBP', 'JPY', 'AUD', 'CAD']
     const [moedaBase, setMoedaBase] = useState('USD')
     const [moedaFinal, setMoedaFinal] = useState('BRL')
-    const [resultado, setResultado] = useState('...')
 
     const changeSelect = (e, oposit) =>{
         const isMoedaFinal = !(oposit === 'moeda-final')
@@ -36,7 +38,11 @@ export default function App(){
         else 
             setMoedaBase(e.target.value)
     }
-
+    const makeOption = (item) =>{
+        return (
+            <option>{item}</option>
+        )
+    }
     useEffect( () => {
         setResultado('...')
         
@@ -45,19 +51,20 @@ export default function App(){
         fetch(`https://economia.awesomeapi.com.br/json/${moedaBase}-${moedaFinal}`)
         .then(respostaApi => respostaApi.json())
         .then(resposta => parseFloat(resposta[0].high))
+        .catch(error => `Não Cosegui :(`)
         .then(currency => currency.toLocaleString(userLang, currencySymb))
         .then(formatedCurrency => setResultado(formatedCurrency))
 
     }, [moedaBase, moedaFinal])
-    
+
+
     return (
         <>
             <h1>{resultado}</h1>
-            
             <Select className="moeda-base" change={changeSelect} 
-            oposit={'moeda-final'} content={['USD', 'BRL', 'EUR']} /> 
+            oposit={'moeda-final'} list={optionMB} content={makeOption}/> 
             <Select className="moeda-final" change={changeSelect} 
-            oposit={'moeda-base'} content={['BRL', 'USD', 'EUR']}/>
+            oposit={'moeda-base'} list={optionMF} content={makeOption}/>
         </>
     )
 }
