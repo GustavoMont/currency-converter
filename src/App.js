@@ -39,11 +39,15 @@ export default function App(){
 
     useEffect( () => {
         setResultado('...')
+        
+        const userLang = navigator.language
+        const currencySymb = { style: 'currency', currency: moedaFinal }
         fetch(`https://economia.awesomeapi.com.br/json/${moedaBase}-${moedaFinal}`)
         .then(respostaApi => respostaApi.json())
-        .then(resposta => resposta[0].high)
-        .then(currency => setResultado(parseFloat(currency).toLocaleString(moedaFinal))) 
-          
+        .then(resposta => parseFloat(resposta[0].high))
+        .then(currency => currency.toLocaleString(userLang, currencySymb))
+        .then(formatedCurrency => setResultado(formatedCurrency))
+
     }, [moedaBase, moedaFinal])
     
     return (
