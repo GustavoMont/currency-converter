@@ -15,16 +15,18 @@ function Select(props) {
 
 
 export default function App() {
+    // Mostra os resultados da Consulta ================
     const [resultado, setResultado] = useState('...')
-    const optionMB = {'Dólar Americano': 'USD', 'Real Brasileiro': 'BRL',
-                    'Euro': 'EUR' , 'Libra Esterlina': 'GBP' ,'Iene': 'JPY' ,'Dólar Australiano': 'AUD' ,
-                    'Dólar Canadense': 'CAD' }
-    const optionMF = {'Real Brasileiro': 'BRL', 'Dólar Americano': 'USD', 
-    'Euro': 'EUR' , 'Libra Esterlina': 'GBP' ,'Iene': 'JPY' ,'Dólar Australiano': 'AUD' ,
-    'Dólar Canadense': 'CAD' }
+    const [conversao, setConversao] = useState('Dólar Americano para Real Brasileiro')
+    // São as opções disponíveis ==============================
+    const optionMB = {'Dólar Americano': 'USD', 'Real Brasileiro': 'BRL', 'Euro': 'EUR' , 
+                    'Libra Esterlina': 'GBP' ,'Iene': 'JPY' ,'Dólar Australiano': 'AUD' ,'Dólar Canadense': 'CAD' }
+    const optionMF = {'Real Brasileiro': 'BRL', 'Dólar Americano': 'USD','Euro': 'EUR' , 
+                        'Libra Esterlina': 'GBP' ,'Iene': 'JPY' ,'Dólar Australiano': 'AUD' ,'Dólar Canadense': 'CAD' }
+    // Variáveis que serão usadas para consumir a API =====================================
     const [moedaBase, setMoedaBase] = useState('USD')
     const [moedaFinal, setMoedaFinal] = useState('BRL')
-
+    // Funções úteis ============================================= 
     const changeSelect = (e, oposit) => {
         const namesOption = Object.keys(optionMF)
         const valuesOption = Object.values(optionMF)
@@ -52,14 +54,19 @@ export default function App() {
             <option>{item}</option>
         )
     }
+    // Faz a consulta na API ============================== 
     useEffect(() => {
-        setResultado('...')
         const userLang = navigator.language
-        const currencySymb = { style: 'currency', currency: moedaFinal }
+        setResultado('...')
+        const currencySymb = { style: 'currency', currency: moedaFinal } // Estilo da Formatação 
         fetch(`https://economia.awesomeapi.com.br/json/${moedaBase}-${moedaFinal}`)
             .then(respostaApi => respostaApi.json())
-            .then(resposta => parseFloat(resposta[0].high))
-            .catch(error => `Não Cosegui :(`)
+            .then(resposta => {
+                const newConversao = resposta[0].name.replace('/', ' para ')
+                setConversao(newConversao)
+               return parseFloat(resposta[0].high)
+            })
+            .catch(() => `Não Cosegui :(` )
             .then(currency => currency.toLocaleString(userLang, currencySymb))
             .then(formatedCurrency => setResultado(formatedCurrency))
 
@@ -68,7 +75,9 @@ export default function App() {
 
     return (
         <>
+            <h1>{1.00.toLocaleString(navigator.language, {style: 'currency', currency: moedaBase})}</h1>
             <h1>{resultado}</h1>
+            <h1>{conversao}</h1>
             <Select className="moeda-base" change={changeSelect}
                 oposit={'moeda-final'} list={Object.keys(optionMB)} content={makeOption} />
             <Select className="moeda-final" change={changeSelect}
