@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import CurrencyBox from './Components/CurrencyBox';
 import SelectCurrency from './Components/SelectCurrency';
+
 
 
 function Select(props) {
@@ -17,7 +19,6 @@ function Select(props) {
 export default function App() {
     // Mostra os resultados da Consulta ================
     const [resultado, setResultado] = useState('...')
-    const [conversao, setConversao] = useState('Dólar Americano para Real Brasileiro')
     // São as opções disponíveis ==============================
     const optionMB = {'Dólar Americano': 'USD', 'Real Brasileiro': 'BRL', 'Euro': 'EUR' , 
                     'Libra Esterlina': 'GBP' ,'Iene': 'JPY' ,'Dólar Australiano': 'AUD' ,'Dólar Canadense': 'CAD' }
@@ -61,23 +62,31 @@ export default function App() {
         const currencySymb = { style: 'currency', currency: moedaFinal } // Estilo da Formatação 
         fetch(`https://economia.awesomeapi.com.br/json/${moedaBase}-${moedaFinal}`)
             .then(respostaApi => respostaApi.json())
-            .then(resposta => {
-                const newConversao = resposta[0].name.replace('/', ' para ')
-                setConversao(newConversao)
-               return parseFloat(resposta[0].high)
-            })
+            .then(resposta => parseFloat(resposta[0].high))
             .catch(() => `Não Cosegui :(` )
             .then(currency => currency.toLocaleString(userLang, currencySymb))
             .then(formatedCurrency => setResultado(formatedCurrency))
 
     }, [moedaBase, moedaFinal])
 
+    const selectMB = document.querySelector('.moeda-base')
+    const selectMF = document.querySelector('.moeda-final')
 
     return (
         <>
-            <h1>{1.00.toLocaleString(navigator.language, {style: 'currency', currency: moedaBase})}</h1>
-            <h1>{resultado}</h1>
-            <h1>{conversao}</h1>
+            <CurrencyBox >
+                <span className="symb">{moedaBase}</span>
+                <div>{1.00.toLocaleString(navigator.language, {style: 'currency', currency: moedaBase})}</div> 
+                <hr />
+                <div>{selectMB ?  selectMB.value :'...'} </div>
+            </CurrencyBox>
+            <CurrencyBox className="Resultado">
+                <span className="symb">{moedaFinal}</span>
+                <div>{resultado}</div>
+                <hr />
+                <div>{selectMF ? selectMF.value :'...'} </div>
+            </CurrencyBox>  
+            <br />
             <Select className="moeda-base" change={changeSelect}
                 oposit={'moeda-final'} list={Object.keys(optionMB)} content={makeOption} />
             <Select className="moeda-final" change={changeSelect}
