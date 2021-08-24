@@ -35,7 +35,7 @@ const CurrencyBox = styled.div`
         top: 8px;
         margin-bottom: 20px;
     }
-    @media(max-width: 800px){
+    @media(max-width: 700px){
         width: 100%;
     }
 `

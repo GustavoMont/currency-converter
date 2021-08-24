@@ -78,7 +78,7 @@ export default function App() {
     const selectMF = document.querySelector('.moeda-final')
 
     return (
-        <>
+        <main>
             <Container>
                 <CurrencyBox >
                     <span className="symb">{moedaBase}</span>
@@ -99,6 +99,6 @@ export default function App() {
                 <Select className="moeda-final" change={changeSelect}
                     oposit={'moeda-base'} list={Object.keys(optionMF)} content={makeOption} />
             </Container>
-        </>
+        </main>
     )
 }

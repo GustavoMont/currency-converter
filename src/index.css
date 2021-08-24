@@ -8,4 +8,12 @@
 body{
     background-color: #222;
     position: relative;
+    min-height: 100vh;
+}
+
+main{
+    width: 100%;
+    position: absolute;
+    top: 40%;
+    transform: translateY(-40%);
 }
