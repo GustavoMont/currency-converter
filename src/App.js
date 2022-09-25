@@ -1,24 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Container from "./Components/styles/Container";
 import CurrencyBox from "./Components/styles/CurrencyBox";
-import SelectCurrency from "./Components/styles/SelectCurrency";
-
-function Select(props) {
-  return (
-    <SelectCurrency
-      className={props.className}
-      onChange={(e) => props.change(e, props.oposit)}
-    >
-      {props.list.map((item) => {
-        return props.content(item);
-      })}
-    </SelectCurrency>
-  );
-}
+import Select from "./Components/common/Select";
 
 export default function App() {
   // Mostra os resultados da Consulta ================
-  const [resultado, setResultado] = useState("...");
+  const [resultado] = useState("...");
   // São as opções disponíveis ==============================
   const optionMB = {
     "Dólar Americano": "USD",
@@ -29,54 +16,31 @@ export default function App() {
     "Dólar Australiano": "AUD",
     "Dólar Canadense": "CAD",
   };
-  const optionMF = {
-    "Real Brasileiro": "BRL",
-    "Dólar Americano": "USD",
-    Euro: "EUR",
-    "Libra Esterlina": "GBP",
-    Iene: "JPY",
-    "Dólar Australiano": "AUD",
-    "Dólar Canadense": "CAD",
-  };
+  // const optionMF = {
+  //   "Real Brasileiro": "BRL",
+  //   "Dólar Americano": "USD",
+  //   Euro: "EUR",
+  //   "Libra Esterlina": "GBP",
+  //   Iene: "JPY",
+  //   "Dólar Australiano": "AUD",
+  //   "Dólar Canadense": "CAD",
+  // };
   // Variáveis que serão usadas para consumir a API =====================================
-  const [moedaBase, setMoedaBase] = useState("USD");
-  const [moedaFinal, setMoedaFinal] = useState("BRL");
-  // Funções úteis =============================================
-  const changeSelect = (e, oposit) => {
-    const namesOption = Object.keys(optionMF);
-    const valuesOption = Object.values(optionMF);
-    const isMoedaFinal = !(oposit === "moeda-final");
-    let troca = isMoedaFinal ? moedaFinal : moedaBase;
-    const other = document.querySelector(`.${oposit}`);
-    if (e.target.value === other.value) {
-      if (isMoedaFinal) {
-        setMoedaBase(troca);
-      } else {
-        setMoedaFinal(troca);
-      }
-      other.value = namesOption[valuesOption.indexOf(troca)];
-    }
-    if (isMoedaFinal) {
-      setMoedaFinal(optionMF[e.target.value]);
-    } else {
-      setMoedaBase(optionMF[e.target.value]);
-    }
-  };
-  const makeOption = (item) => {
-    return <option>{item}</option>;
-  };
+  const [moedaBase] = useState("USD");
+  const [moedaFinal] = useState("BRL");
+
   // Faz a consulta na API ==============================
-  useEffect(() => {
-    const userLang = navigator.language;
-    setResultado("...");
-    const currencySymb = { style: "currency", currency: moedaFinal }; // Estilo da Formatação
-    fetch(`https://economia.awesomeapi.com.br/json/${moedaBase}-${moedaFinal}`)
-      .then((respostaApi) => respostaApi.json())
-      .then((resposta) => parseFloat(resposta[0].high))
-      .catch(() => `Não Cosegui :(`)
-      .then((currency) => currency.toLocaleString(userLang, currencySymb))
-      .then((formatedCurrency) => setResultado(formatedCurrency));
-  }, [moedaBase, moedaFinal]);
+  // useEffect(() => {
+  //   const userLang = navigator.language;
+  //   setResultado("...");
+  //   const currencySymb = { style: "currency", currency: moedaFinal }; // Estilo da Formatação
+  //   fetch(`https://economia.awesomeapi.com.br/json/${moedaBase}-${moedaFinal}`)
+  //     .then((respostaApi) => respostaApi.json())
+  //     .then((resposta) => parseFloat(resposta[0].high))
+  //     .catch(() => `Não Cosegui :(`)
+  //     .then((currency) => currency.toLocaleString(userLang, currencySymb))
+  //     .then((formatedCurrency) => setResultado(formatedCurrency));
+  // }, [moedaBase, moedaFinal]);
 
   const selectMB = document.querySelector(".moeda-base");
   const selectMF = document.querySelector(".moeda-final");
@@ -95,7 +59,7 @@ export default function App() {
           <hr />
           <div className="nome-moeda">{selectMB ? selectMB.value : "..."} </div>
         </CurrencyBox>
-        <CurrencyBox className="Resultado">
+        <CurrencyBox className="Resultado" isFinalCurrency>
           <span className="symb">{moedaFinal}</span>
           <div>{resultado}</div>
           <hr />
@@ -103,20 +67,7 @@ export default function App() {
         </CurrencyBox>
       </Container>
       <Container>
-        <Select
-          className="moeda-base"
-          change={changeSelect}
-          oposit={"moeda-final"}
-          list={Object.keys(optionMB)}
-          content={makeOption}
-        />
-        <Select
-          className="moeda-final"
-          change={changeSelect}
-          oposit={"moeda-base"}
-          list={Object.keys(optionMF)}
-          content={makeOption}
-        />
+        <Select isFinalCurrency={true} list={Object.keys(optionMB)} />
       </Container>
     </main>
   );
