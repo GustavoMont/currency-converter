@@ -9,12 +9,16 @@ function Select({ list, isFinalCurrency, firstElement, onSelect }) {
   const selectRef = useRef(null);
 
   function closeDropdown(e) {
-    if (e.path[0] !== selectRef.current) {
+    if (e.target !== selectRef.current) {
       setIsActive(false);
     }
   }
   useEffect(() => {
     document.body.addEventListener("click", closeDropdown);
+
+    return () => {
+      setIsActive(false);
+    };
   }, []);
 
   return (
@@ -23,7 +27,7 @@ function Select({ list, isFinalCurrency, firstElement, onSelect }) {
       onClick={() => setIsActive(!isActive)}
       isFinalCurrency={isFinalCurrency}
     >
-      <div className="active-option" ref={selectRef}>
+      <div data-testid="select" className="active-option" ref={selectRef}>
         <div>{activeOption}</div>
         <div className="icon">
           <ChevronDownIcon />
@@ -35,6 +39,7 @@ function Select({ list, isFinalCurrency, firstElement, onSelect }) {
           .filter((item) => activeOption !== item)
           .map((item) => (
             <Option
+              role={"option"}
               key={item}
               onClick={() => {
                 if (onSelect) {
