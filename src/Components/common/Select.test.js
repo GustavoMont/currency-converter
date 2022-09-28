@@ -7,7 +7,7 @@ describe("Testing Select Component", () => {
   const list = ["A", "B", "C", "D"];
   it("Should render all options", () => {
     render(<Select list={list} />);
-    expect(screen.getByText("A")).toBeVisible();
+    expect(screen.getByText(list[0])).toBeVisible();
 
     const select = screen.getByTestId("select");
 
@@ -41,11 +41,5 @@ describe("Testing Select Component", () => {
     screen.getAllByRole("option").forEach((option) => {
       expect(option).not.toHaveTextContent(list[1]);
     });
-  });
-
-  it("Should render correct first option", () => {
-    render(<Select list={list} firstElement={list[3]} />);
-    expect(screen.getByText(list[2])).not.toBeVisible();
-    expect(screen.getByText(list[3])).toBeVisible();
   });
 });

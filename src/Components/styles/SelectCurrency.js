@@ -3,7 +3,7 @@ import styled from "styled-components";
 const SelectCurrency = styled.div`
   width: 300px;
   max-width: 100%;
-
+  cursor: pointer;
   font-size: 1.2rem;
   margin-top: 2rem;
 

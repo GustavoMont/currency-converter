@@ -3,9 +3,14 @@ import { ChevronDownIcon } from "../icons";
 import Option from "../styles/Option";
 import SelectCurrency from "../styles/SelectCurrency";
 
-function Select({ list, isFinalCurrency, firstElement, onSelect }) {
+function Select({
+  list,
+  isFinalCurrency,
+  activeOption: outActiveOption,
+  onSelect,
+}) {
   const [isActive, setIsActive] = useState(false);
-  const [activeOption, setActiveOption] = useState(firstElement || list[0]);
+  const [activeOption, setActiveOption] = useState(list[0] || outActiveOption);
   const selectRef = useRef(null);
 
   function closeDropdown(e) {
@@ -28,7 +33,7 @@ function Select({ list, isFinalCurrency, firstElement, onSelect }) {
       isFinalCurrency={isFinalCurrency}
     >
       <div data-testid="select" className="active-option" ref={selectRef}>
-        <div>{activeOption}</div>
+        <div>{outActiveOption || activeOption}</div>
         <div className="icon">
           <ChevronDownIcon />
         </div>
@@ -43,7 +48,7 @@ function Select({ list, isFinalCurrency, firstElement, onSelect }) {
               key={item}
               onClick={() => {
                 if (onSelect) {
-                  onSelect();
+                  onSelect(item);
                 }
                 setActiveOption(item);
               }}
