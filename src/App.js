@@ -3,6 +3,7 @@ import Container from "./Components/styles/Container";
 import CurrencyBox from "./Components/styles/CurrencyBox";
 import Select from "./Components/common/Select";
 import Spinner from "./Components/common/Spinner";
+import options from "./Components/data/currenciesOptions";
 
 export default function App() {
   const [resultado, setResultado] = useState();
@@ -14,15 +15,6 @@ export default function App() {
     value: "BRL",
     text: "Real Brasileiro",
   });
-  const options = {
-    "Dólar Americano": "USD",
-    "Real Brasileiro": "BRL",
-    Euro: "EUR",
-    "Libra Esterlina": "GBP",
-    Iene: "JPY",
-    "Dólar Australiano": "AUD",
-    "Dólar Canadense": "CAD",
-  };
 
   function currencyFormatter(value, currency) {
     const valueNumber = parseFloat(value);
