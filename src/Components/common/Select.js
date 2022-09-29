@@ -31,15 +31,17 @@ function Select({
       isActive={isActive}
       onClick={() => setIsActive(!isActive)}
       isFinalCurrency={isFinalCurrency}
+      ref={selectRef}
+      role={"listbox"}
     >
-      <div data-testid="select" className="active-option" ref={selectRef}>
+      <div data-testid="select" className="active-option">
         <div>{outActiveOption || activeOption}</div>
         <div className="icon">
           <ChevronDownIcon />
         </div>
       </div>
 
-      <div className="options-container">
+      <div className="options-container" data-testid="options-container">
         {list
           .filter((item) => activeOption !== item)
           .map((item) => (

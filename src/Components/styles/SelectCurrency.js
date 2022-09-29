@@ -6,17 +6,15 @@ const SelectCurrency = styled.div`
   cursor: pointer;
   font-size: 1.2rem;
   margin-top: 2rem;
-
   background-color: ${(props) =>
     props.isFinalCurrency ? "#00ff37" : "#e83e33"};
-
   position: relative;
-
   .active-option {
     padding: 0.5rem 1rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    pointer-events: none;
     border-bottom: ${({ isActive }) => (isActive ? "2px" : "0")} solid #000;
     div {
       pointer-events: none;
@@ -31,11 +29,9 @@ const SelectCurrency = styled.div`
       }
     }
   }
-
   .options-container {
     background-color: ${(props) =>
       props.isFinalCurrency ? "#00ff37" : "#e83e33"};
-
     position: absolute;
     width: 100%;
     left: 0;

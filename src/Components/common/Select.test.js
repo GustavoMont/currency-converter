@@ -1,21 +1,25 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import userEvent from "@testing-library/user-event";
 import Select from "./Select";
 
 describe("Testing Select Component", () => {
   const list = ["A", "B", "C", "D"];
-  it("Should render all options", () => {
+  it("Should render all options on click and hide on click out", async () => {
     render(<Select list={list} />);
-    expect(screen.getByText(list[0])).toBeVisible();
-
-    const select = screen.getByTestId("select");
-
-    userEvent.click(select);
-
-    list.forEach((item) => {
-      expect(screen.getByText(item)).toBeVisible();
+    expect(screen.getByTestId("options-container")).toHaveStyle(
+      "opacity: 0; height: 0px;"
+    );
+    screen.getAllByRole("option").forEach((option) => {
+      expect(option).toBeInTheDocument();
     });
+    fireEvent.click(screen.getByRole("listbox"));
+    expect(screen.getByTestId("options-container")).toHaveStyle(
+      "opacity: 1; height: fit-content;"
+    );
+    fireEvent.click(document.body);
+    expect(screen.getByTestId("options-container")).toHaveStyle(
+      "opacity: 0; height: 0px;"
+    );
   });
 
   it("Should change option and call onSelect function", () => {
