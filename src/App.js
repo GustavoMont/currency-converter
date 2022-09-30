@@ -3,7 +3,7 @@ import Container from "./Components/styles/Container";
 import CurrencyBox from "./Components/styles/CurrencyBox";
 import Select from "./Components/common/Select";
 import Spinner from "./Components/common/Spinner";
-import options from "./Components/data/currenciesOptions";
+import options from "./data/currenciesOptions";
 
 export default function App() {
   const [resultado, setResultado] = useState();
@@ -15,6 +15,13 @@ export default function App() {
     value: "BRL",
     text: "Real Brasileiro",
   });
+
+  function handleResultOutPut(result, formatter, ...params) {
+    if (result === "ERR") {
+      return "Não Disponível";
+    }
+    return formatter(result, ...params);
+  }
 
   function currencyFormatter(value, currency) {
     const valueNumber = parseFloat(value);
@@ -35,10 +42,14 @@ export default function App() {
     }
     async function fetchEconomiaApi() {
       setResultado();
-      const [converterResponse] = await fetch(
-        `https://economia.awesomeapi.com.br/json/${baseCurrency.value}-${finalCurrency.value}`
-      ).then((respostaApi) => respostaApi.json());
-      setResultado(converterResponse.bid);
+      try {
+        const [converterResponse] = await fetch(
+          `https://economia.awesomeapi.com.br/json/${baseCurrency.value}-${finalCurrency.value}`
+        ).then((respostaApi) => respostaApi.json());
+        setResultado(converterResponse.bid);
+      } catch (error) {
+        setResultado("ERR");
+      }
     }
     fetchEconomiaApi();
   }, [baseCurrency, finalCurrency]);
@@ -58,7 +69,9 @@ export default function App() {
             {!resultado ? (
               <Spinner />
             ) : (
-              currencyFormatter(resultado, finalCurrency.value)
+              handleResultOutPut(resultado, currencyFormatter, [
+                finalCurrency.value,
+              ])
             )}
           </div>
           <hr />
